@@ -1,17 +1,11 @@
 #ifndef TOLOCK_H
 #define TOLOCK_H
 
-#include "Lock.h"
 #include <atomic>
 #include <pthread.h>
 #include <chrono>
 
-class TimeUnit {
-public:
-    static constexpr long MILLISECONDS = 1;
-};
-
-class TOLock : public Lock {
+class TOLock{
 private:
     struct QNode {
         QNode* pred = nullptr;
@@ -25,8 +19,8 @@ private:
 public:
     TOLock();
     ~TOLock();
-    bool tryLock(long time, TimeUnit unit);
-    void unlock() override;
+    bool tryLock(long time);
+    void unlock() ;
 
 private:
     static void destroyQNode(void* ptr);

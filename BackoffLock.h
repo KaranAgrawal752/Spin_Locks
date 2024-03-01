@@ -8,8 +8,8 @@
 class BackoffLock : public Lock {
 private:
     std::atomic<bool> state;
-    static const int MIN_DELAY=1; /* Your min delay */
-    static const int MAX_DELAY=100; /* Your max delay */
+    static const int MIN_DELAY=1; /* Your min delay in milliseconds*/
+    static const int MAX_DELAY=10; /* Your max delay in milliseconds*/
 
 public:
     BackoffLock();

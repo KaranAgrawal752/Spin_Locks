@@ -1,8 +1,7 @@
 #include "ALock.h"
 
-ALock::ALock(int capacity) : size(capacity), tail(0) {
+ALock::ALock(int capacity) : size(capacity), tail(0), flag(capacity) {
     pthread_key_create(&mySlotIndex, nullptr);
-    flag.resize(capacity);
     flag[0].store(true);
 }
 

@@ -1,5 +1,8 @@
 #include "TOLock.h"
 
+// Define the static member variable
+TOLock::QNode* const TOLock::AVAILABLE = nullptr;
+
 TOLock::TOLock() : tail(nullptr) {
     pthread_key_create(&myNodeKey, destroyQNode);
 }
@@ -8,9 +11,9 @@ TOLock::~TOLock() {
     pthread_key_delete(myNodeKey);
 }
 
-bool TOLock::tryLock(long time, TimeUnit unit) {
+bool TOLock::tryLock(long time) {  //time in seconds
     auto startTime = std::chrono::steady_clock::now();
-    auto patience = std::chrono::milliseconds(time * unit.MILLISECONDS);
+    auto patience = std::chrono::milliseconds(time * 1000);
     
     QNode* qnode = new QNode();
     pthread_setspecific(myNodeKey, qnode);

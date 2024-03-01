@@ -29,5 +29,5 @@ void CLHLock::unlock() {
 }
 
 void CLHLock::destroyQNode(void* ptr) {
-    delete reinterpret_cast<QNode*>(ptr);
+    // delete reinterpret_cast<QNode*>(ptr);
 }

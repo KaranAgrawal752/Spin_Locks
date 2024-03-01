@@ -1,10 +1,13 @@
 #include "MCSLock.h"
-
+#include<iostream>
+using namespace std;
 MCSLock::MCSLock() : tail(nullptr) {
+    cout<<"MCSLock constructor"<<endl;
     pthread_key_create(&myNodeKey, destroyQNode);
 }
 
 MCSLock::~MCSLock() {
+    cout<<"MCSLock destructor"<<endl;
     pthread_key_delete(myNodeKey);
 }
 
@@ -21,7 +24,7 @@ void MCSLock::lock() {
         pred->next = myNode;
 
         // Wait until predecessor gives up the lock
-        while (myNode->locked) {}
+        while (myNode->locked) { }
     }
 }
 
