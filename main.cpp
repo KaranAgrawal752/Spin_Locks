@@ -1,10 +1,8 @@
 #include "TASLock.h"
 #include "TTASLock.h"
-#include "BackoffLock.h"
 #include "ALock.h"
 #include "CLHLock.h"
 #include "MCSLock.h"
-#include "TOLock.h"
 #include "Lock.h"
 #include <iostream>
 #include <vector>
@@ -32,12 +30,6 @@ struct ThreadArgs {
     int id;
 };
 
-struct TOThreadArgs
-{
-    TOLock* mutex;
-    int id;
-};
-
 void* threadFunction(void * args_ptr) {
     ThreadArgs* args = static_cast<ThreadArgs*>(args_ptr);
 
@@ -45,74 +37,33 @@ void* threadFunction(void * args_ptr) {
     Lock* mutex = args->mutex;
     int id=args->id;
     mutex->lock();
-    int c=10;
+    int c=100;
     while(c--){}
+    // usleep(100);
     mutex->unlock();
-
-    return nullptr;
-}
-void* TOthreadFunction(void * args_ptr) {
-    TOThreadArgs* args = static_cast<TOThreadArgs*>(args_ptr);
-
-    // Accessing univ_obj and invoc_obj from args
-    TOLock* mutex = args->mutex;
-    int id=args->id;
-
-    if(mutex->tryLock(1))
-    {
-        int c=10;
-        while(c--){}
-        mutex->unlock();
-    }
 
     return nullptr;
 }
 
 int main() {
     cout<<"main started\n";
-    vector<string> locks={"TASLock", "TTASLock", "BackoffLock", "ALock", "CLHLock", "MCSLock", "TOLock"};
-    int N=100;
-    vector<vector<int>>  time_res(7,vector<int>(N+1,0));
-    for(int thread_count=1;thread_count<=N;thread_count++)
+    vector<string> locks={"TASLock", "TTASLock", "ALock", "CLHLock", "MCSLock"};
+    int N=500;
+    int k=10;
+    vector<vector<long>>  time_res(5,vector<long>(N/k+1,0));
+    for(int i=0;i<=4;i++)
     {
-        cout<<"6th lock with no of thread "<<thread_count<<endl;
-        TOLock* mutex=new TOLock();
-        auto start=chrono::high_resolution_clock::now();
-        vector<pthread_t> myThread(thread_count);
-        for (int i = 0; i < thread_count; i++) {
-            TOThreadArgs* args = new TOThreadArgs{mutex,i};
-            if (pthread_create(&myThread[i], nullptr, TOthreadFunction, args)) {
-                cerr << "Error creating thread." << endl;
-                return 1;
-            }
-            // cout<<i<<" ";
-        }
-
-        // Wait for all threads to finish execution
-        for (int i = 0; i < thread_count; i++) {
-            if (pthread_join(myThread[i], NULL)) {
-                cerr << "Error joining thread." << endl;
-                return 1;
-            }
-        }
-        auto end=chrono::high_resolution_clock::now();
-        auto duration=chrono::duration_cast<chrono::microseconds>(end - start);
-        time_res[6][thread_count]=duration.count();
-    }
-    for(int i=5;i>=0;i--)
-    {
-        for(int thread_count=1;thread_count<=N;thread_count++)
+        for(int thread_count=k;thread_count<=N;thread_count+=k)
         {
-            cout<<i<<"th lock with no of thread "<<thread_count<<endl;
+            cout<<i<<"th lock with no. of thread "<<thread_count<<endl;
             Lock* mutex;
             switch(i)
             {
                 case 0: mutex=new TASLock();break;
                 case 1: mutex=new TTASLock();break;
-                case 2: mutex=new BackoffLock();break;
-                case 3: mutex=new ALock(thread_count);break;
-                case 4: mutex=new CLHLock();break;
-                case 5: mutex=new MCSLock();break;
+                case 2: mutex=new ALock(thread_count);break;
+                case 3: mutex=new CLHLock();break;
+                case 4: mutex=new MCSLock();break;
             }
             auto start=chrono::high_resolution_clock::now();
             vector<pthread_t> myThread(thread_count);
@@ -135,19 +86,19 @@ int main() {
             // cout<<"ended **************************************"<<endl;
             auto end=chrono::high_resolution_clock::now();
             auto duration=chrono::duration_cast<chrono::microseconds>(end - start);
-            time_res[i][thread_count]=duration.count();
+            time_res[i][thread_count/k]=duration.count()/1000;
         }
     }
     
 
     ofstream file("result");
     if (file.is_open()) {
-        file<<"7 "<<N<<endl;
-        for(int i=0;i<7;i++)
+        file<<"5 "<<N<<endl;
+        for(int i=0;i<5;i++)
         {
-            for(int j=1;j<=N;j++)
+            for(int j=1;j<=N/k;j++)
             {
-                file<<1000.00/(double)time_res[i][j]<<" ";
+                file<<time_res[i][j]<<" ";
             }
             file<<endl;
         }

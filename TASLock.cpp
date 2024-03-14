@@ -1,7 +1,8 @@
 #include "TASLock.h"
 
 void TASLock::lock() {
-    while (state.exchange(true)) {}
+    while (state.exchange(true)) {
+    }
 }
 
 void TASLock::unlock() {

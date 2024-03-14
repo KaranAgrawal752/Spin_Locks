@@ -1,5 +1,5 @@
 all:
-	g++ -pthread TASLock.cpp TTASLock.cpp Backoff.cpp BackoffLock.cpp ALock.cpp CLHLock.cpp MCSLock.cpp TOLock.cpp main.cpp -o program
+	g++ -pthread TASLock.cpp TTASLock.cpp ALock.cpp CLHLock.cpp MCSLock.cpp main.cpp -o program
 
 
 clean:
