@@ -37,7 +37,7 @@ void* threadFunction(void * args_ptr) {
     Lock* mutex = args->mutex;
     int id=args->id;
     mutex->lock();
-    int c=100;
+    int c=100000000;
     while(c--){}
     // usleep(100);
     mutex->unlock();
@@ -48,8 +48,8 @@ void* threadFunction(void * args_ptr) {
 int main() {
     cout<<"main started\n";
     vector<string> locks={"TASLock", "TTASLock", "ALock", "CLHLock", "MCSLock"};
-    int N=500;
-    int k=10;
+    int N=100;
+    int k=20;
     vector<vector<long>>  time_res(5,vector<long>(N/k+1,0));
     for(int i=0;i<=4;i++)
     {

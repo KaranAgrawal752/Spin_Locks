@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 # Sample data for lines
 x = [1, 2, 3, 4, 5]
 y=[]
-k=50
+k=20
 
 # Open a file for reading
-with open('result1', 'r') as file:
+with open('result', 'r') as file:
     # Iterate over each line in the file
     cnt=-1
     for line in file:
@@ -24,7 +24,7 @@ for i in range(5):
     plt.xlabel('Number of threads')
     plt.ylabel('time(in ms)')
     plt.title(labels[i]+' perfomance')
-    plt.text(max(x), max(y[0]), '', horizontalalignment='right', verticalalignment='top')
+    # plt.text(max(x), max(y[0]), '', horizontalalignment='right', verticalalignment='top')
     plt.savefig("graphs/"+labels[i]+".pdf",format='pdf')
     plt.clf()
 
@@ -39,8 +39,8 @@ plt.plot(x, y[4], color='cyan', label='MCSLock',linewidth=3)
 plt.xlabel('Number of threads')
 plt.ylabel('time(in ms)')
 plt.title('Lock perfomance')
-plt.text(max(x), max(y[0]), 'Top Right', horizontalalignment='right', verticalalignment='top') 
-# plt.savefig('graphs/allLocks.png')
+# plt.text(max(x), max(y[0]), 'Top Right', horizontalalignment='right', verticalalignment='top') 
+plt.savefig("graphs/allLocks.pdf",format='pdf')
 # Add a legend
 plt.legend()
 # Show the plot

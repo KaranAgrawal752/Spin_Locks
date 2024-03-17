@@ -13,7 +13,7 @@ ALock::~ALock() {
 
 void ALock::lock() {
 
-    int slot = tail.fetch_add(1, std::memory_order_acquire) % size;
+    int slot = tail.fetch_add(1) % size;
     pthread_setspecific(mySlotIndex, reinterpret_cast<void*>(slot));
 
     std::atomic_thread_fence(std::memory_order_acq_rel);
@@ -23,7 +23,6 @@ void ALock::lock() {
 
 void ALock::unlock() {
     int slot = reinterpret_cast<long>(pthread_getspecific(mySlotIndex));
-    std::atomic_thread_fence(std::memory_order_acq_rel);
     flag[slot].store(false, std::memory_order_acq_rel); // Memory fence for flag modification
     flag[(slot + 1) % size].store(true, std::memory_order_acq_rel); // Memory fence for flag modification
 }
