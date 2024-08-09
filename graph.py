@@ -39,9 +39,9 @@ plt.plot(x, y[4], color='cyan', label='MCSLock',linewidth=3)
 plt.xlabel('Number of threads')
 plt.ylabel('time(in ms)')
 plt.title('Lock perfomance')
+plt.legend()
 # plt.text(max(x), max(y[0]), 'Top Right', horizontalalignment='right', verticalalignment='top') 
 plt.savefig("graphs/allLocks.pdf",format='pdf')
 # Add a legend
-plt.legend()
 # Show the plot
 plt.show()
